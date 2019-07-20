@@ -23,7 +23,7 @@ extension UIImage {
         var delayCentisecondsOut: [Int] = []
         for i in 0..<count {
             imagesOut.append(CGImageSourceCreateImageAtIndex(source, i, nil))
-            delayCentisecondsOut.append(delayCentisecondsForImageAtIndex(source: source, i: i))
+            delayCentisecondsOut.append(UIImage.delayCentisecondsForImageAtIndex(source: source, i: i))
         }
         return (imagesOut: imagesOut, delayCentisecondsOut: delayCentisecondsOut)
     }
@@ -90,11 +90,11 @@ extension UIImage {
         let count = CGImageSourceGetCount(source)
         var images = [CGImage?](repeating: nil, count: count)
         var delayCentiseconds = [Int](repeating: 0, count: count) // in centiseconds
-        let result = createImagesAndDelays(source: source, count: count)
+        let result = UIImage.createImagesAndDelays(source: source, count: count)
         images = result.imagesOut
         delayCentiseconds = result.delayCentisecondsOut
         let totalDurationCentiseconds = sum(values: delayCentiseconds)
-        let frames = frameArray(images: images, delayCentiseconds: delayCentiseconds, totalDurationCentiseconds: totalDurationCentiseconds)
+        let frames = UIImage.frameArray(images: images, delayCentiseconds: delayCentiseconds, totalDurationCentiseconds: totalDurationCentiseconds)
         if frames != nil {
             var animation: UIImage? = nil
             animation = UIImage.animatedImage(with: frames!, duration: TimeInterval(totalDurationCentiseconds) / 100.0)
@@ -106,7 +106,7 @@ extension UIImage {
     
     private static func animatedImageWithAnimatedGIFReleasingImageSource(source: CGImageSource?) -> UIImage? {
         if source != nil {
-            let image: UIImage? = animatedImageWithAnimatedGIFImageSource(source!)
+            let image: UIImage? = UIImage.animatedImageWithAnimatedGIFImageSource(source!)
             return image
         } else {
             return nil
@@ -119,7 +119,7 @@ extension UIImage {
             let bytes = nsData.bytes.assumingMemoryBound(to: UInt8.self)
             let CFdata: CFData? = CFDataCreate(kCFAllocatorDefault, bytes, data!.count)
             let souce = CGImageSourceCreateWithData(CFdata!, nil)
-            return animatedImageWithAnimatedGIFReleasingImageSource(source: souce)
+            return UIImage.animatedImageWithAnimatedGIFReleasingImageSource(source: souce)
         } else {
             return nil
         }
@@ -130,7 +130,7 @@ extension UIImage {
             let nsURL: NSURL = url! as NSURL
             let cfURL: CFURL = nsURL as CFURL
             let souce = CGImageSourceCreateWithURL(cfURL, nil)
-            return animatedImageWithAnimatedGIFReleasingImageSource(source: souce)
+            return UIImage.animatedImageWithAnimatedGIFReleasingImageSource(source: souce)
         } else {
             return nil
         }
